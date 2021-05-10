@@ -128,4 +128,22 @@ def sec_gf_mul(byte_a,byte_b):
     # print ("m_a:", m_a)
     # print ("m_b:", m_b)
 
-    return hex(r * (m_a & m_b))
+    result = r * (m_a & m_b)
+    return result.to_bytes(1,"big")
+
+
+def gf_exp(base, exp):
+    base_int = int.from_bytes(base, "big")
+    
+    gf_base = ltable[base_int]
+
+    temp_ltable_result = (gf_base * exp)%255
+    # print ("LOG Conversion:", temp_ltable_result)
+
+    temp_atable_result = atable[temp_ltable_result]
+
+    # print ("EXP Conversion:", temp_atable_result)
+    
+
+    return temp_atable_result.to_bytes(1, "big")
+
