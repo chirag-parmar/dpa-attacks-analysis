@@ -1,6 +1,6 @@
 #Log table using 0xe5 (229) as the generator
 ltable = [
-0x00, 0xff, 0xc8, 0x08, 0x91, 0x10, 0xd0, 0x36, 
+0xff, 0xff, 0xc8, 0x08, 0x91, 0x10, 0xd0, 0x36, 
 0x5a, 0x3e, 0xd8, 0x43, 0x99, 0x77, 0xfe, 0x18, 
 0x23, 0x20, 0x07, 0x70, 0xa1, 0x6c, 0x0c, 0x7f, 
 0x62, 0x8b, 0x40, 0x46, 0xc7, 0x4b, 0xe0, 0x0e, 
@@ -68,6 +68,20 @@ atable = [
 0x66, 0xb2, 0x76, 0x60, 0xda, 0xc5, 0xf3, 0xf6, 
 0xaa, 0xcd, 0x9a, 0xa0, 0x75, 0x54, 0x0e, 0x01 ]
 
+def add_with_flags(a, b):
+    temp_sum = format(a + b, "09b")
+    c = int(temp_sum[0], 2)
+    s = int(temp_sum[1:], 2)
+
+    return c, s
+
+def is_smaller(a, b):
+    bin_temp = ((a - b) & 0b111111111)
+    temp_sum = format(bin_temp, "09b")
+    c = int(temp_sum[0], 2)
+
+    return c
+
 def gf_mul(byte_a,byte_b):
 
     a = int.from_bytes(byte_a,"big")
@@ -76,7 +90,7 @@ def gf_mul(byte_a,byte_b):
     # print("Input bytes to int:", a , ",", b)
 
     if a == 0 or b == 0:
-        return 0
+        return hex(0)
     
     temp_ltable_result = (ltable[a] + ltable[b])%255
 
@@ -88,3 +102,33 @@ def gf_mul(byte_a,byte_b):
 
     return hex(temp_atable_result)
 
+def sec_gf_mul(byte_a,byte_b):
+
+    a = int.from_bytes(byte_a,"big")
+    b = int.from_bytes(byte_b,"big")
+
+    # print("Input bytes to int:", a , ",", b)
+
+    gf_a = ltable[a]
+    gf_b = ltable[b]
+
+    # print ("LOG Conversions:", gf_a, ",", gf_b)
+    
+    c, s = add_with_flags(ltable[a], ltable[b])
+
+    # print ("Add with Flags:", c, ",", s)
+
+    r = atable[c + s]
+
+    # print ("r:", r)
+
+    m_a = is_smaller(ltable[a], 255)
+    m_b = is_smaller(ltable[b], 255)
+
+    # print ("m_a:", m_a)
+    # print ("m_b:", m_b)
+
+    return hex(r * (m_a & m_b))
+
+print(gf_mul(b'\x00', b'\x00'))
+print(sec_gf_mul(b'\x00', b'\x00'))
