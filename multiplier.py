@@ -129,6 +129,3 @@ def sec_gf_mul(byte_a,byte_b):
     # print ("m_b:", m_b)
 
     return hex(r * (m_a & m_b))
-
-print(gf_mul(b'\x00', b'\x00'))
-print(sec_gf_mul(b'\x00', b'\x00'))
