@@ -131,6 +131,31 @@ def sec_gf_mul(byte_a,byte_b):
     result = r * (m_a & m_b)
     return result.to_bytes(1,"big")
 
+def sec_gf_sqr(byte_a):
+
+    a = int.from_bytes(byte_a,"big")
+
+    # print("Input bytes to int:", a , ",", b)
+
+    gf_a = ltable[a]
+
+    # print ("LOG Conversions:", gf_a, ",", gf_b)
+    
+    c, s = add_with_flags(gf_a, gf_a)
+
+    # print ("Add with Flags:", c, ",", s)
+
+    r = atable[c + s]
+
+    # print ("r:", r)
+
+    m_a = is_smaller(ltable[a], 255)
+    
+    # print ("m_a:", m_a)
+
+    result = r * m_a 
+    return result.to_bytes(1,"big")
+
 def gf_exp(base, exp):
     base_int = int.from_bytes(base, "big")
     

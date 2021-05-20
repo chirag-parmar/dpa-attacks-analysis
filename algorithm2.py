@@ -12,11 +12,17 @@ def inversion (x):
     #print(multiplier.sec_gf_mul(y,multiplier.sec_gf_mul(y, multiplier.sec_gf_mul(y,y))))
     #print(multiplier.gf_exp(y,4))
 
-    w = multiplier.gf_exp(y,4)
+    #w = multiplier.gf_exp(y,4)
+    w = multiplier.sec_gf_sqr(y)
+    w = multiplier.sec_gf_sqr(w)
 
     y = multiplier.sec_gf_mul(y,w)
 
-    y = multiplier.gf_exp(y,16)
+    #y = multiplier.gf_exp(y,16)
+    y = multiplier.sec_gf_sqr(y)
+    y = multiplier.sec_gf_sqr(y)
+    y = multiplier.sec_gf_sqr(y)
+    y = multiplier.sec_gf_sqr(y)
 
     y = multiplier.sec_gf_mul(y,w)
 
