@@ -1,31 +1,42 @@
 # Algorithm 5 - AES S-box
 
-import algorithm3
+from algorithm3 import *
+import numpy as np
 
-af_matrix = [[1,0,0,0,1,1,1,1],
+af_matrix = np.array([[1,0,0,0,1,1,1,1],
              [1,1,0,0,0,1,1,1],
              [1,1,1,0,0,0,1,1],
              [1,1,1,1,0,0,0,1],
              [1,1,1,1,1,0,0,0],
              [0,1,1,1,1,1,0,0],
              [0,0,1,1,1,1,1,0],
-             [0,0,0,1,1,1,1,1]]
+             [0,0,0,1,1,1,1,1]], dtype=bool)
 
-v = [1,1,0,0,0,1,1,0]
+v = np.array([1,1,0,0,0,1,1,0], dtype=bool)
 
-def at (a, i):
-    for j in range (7):
-            c += af_matrix[i][j] * a[j]
-    c = c ^ v[i]
-    return c
+def at (a):
+    # convert byte a to numpy array
+    matrix_a = convert_to_binary_array(a)
+    result = af_matrix.dot(matrix_a)
+    result_byte = np.packbits(np.uint8(np.flip(result)))[0]
+    return result_byte ^ 0x63
+    # return result_byte
 
+def sec_sbox_aes (x):
+    d = len(x)
+    y = sec_exp_254(x)
 
+    for i in range (d):
+        y[i] = at(y[i])
+        y[0] = y[0] ^ 0x63
 
-def sec_sbox_aes ( byte_array_x):
-    byte_array_y = sec_exp_254(byte_array_x)
-    for i in range (d+1):
-        byte_array_y[i] = at(byte_array_y[i], i)
-        byte_array_y[0] = byte_array_y[0] + b'\63'
+    y[0] = y[0] ^ 0x63
+    return y
 
-    byte_array_y[0] = byte_array_y[0] + b'\63'
-    return byte_array_y
+def convert_to_binary_array(a):
+    binary_string = "{:08b}".format(a)
+    binary_array = []
+    for bit in binary_string:
+        binary_array.append(int(bit))
+
+    return np.array(binary_array, dtype=bool)

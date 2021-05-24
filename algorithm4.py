@@ -4,16 +4,16 @@ import random
 import os
 import numpy as np
 
-def refresh_masks(byte_x_array):
-    d = len(byte_x_array)
-    for i in range (1, d+1) :
+# @description: TODO
+# @params: x - integer - input array
+def refresh_masks(x):
+    d = len(x)
+    for i in range (1, d) :
         t = random.randint(0, 255)
-	t = t.to_bytes(1,"big")
-	byte_x_array[0] = byte_x_array[0] + t
-	byte_x_array[i] = byte_x_array[i] + t
+        x[0] = x[0] ^ t
+        x[i] = x[i] ^ t
 
-    return byte_x_array
+    return x
 
-
-x = [b'\x07', b'\x00']
-print(refresh_masks(x))
+# x = [23, 255]
+# print(refresh_masks(x))

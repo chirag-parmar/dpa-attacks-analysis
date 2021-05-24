@@ -2,36 +2,43 @@
 
 import random
 import os
-import multiplier
-import algorithm4
-import algorithm1
+from multiplier import *
+from algorithm4 import *
+from algorithm1 import *
+from algorithm2 import *
+import numpy as np
 
-
-def sec_exp_254 (byte_array_x):
+# @description: TODO
+# @params: x - integer - input array
+def sec_exp_254 (x):
     
-    d = len(byte_array_x)
+    d = len(x)
+    w = np.empty(d, dtype=int)
+    y = np.empty(d, dtype=int)
+    z = np.empty(d, dtype=int)
 
-    for i in range (d+1):
-        byte_array_z[i] = sec_gf_mul( byte_array_x[i], byte_array_x[i])
+    for i in range (d):
+        z[i] = sec_gf_sqr(x[i]) # x ^ 2
     
-    refresh_masks(byte_array_z)
-    byte_array_y = sec_mult(byte_array_z,byte_array_x)
+    refresh_masks(z)
+    y = sec_mult(z,x)
      
-    for i in range (d+1):
-        byte_array_w[i] = gf_exp( byte_array_y[i], 4)
+    for i in range (d):
+        w[i] = sec_gf_sqr(sec_gf_sqr(y[i])) # y ^ 4
   
-    refresh_masks(byte_array_w)
-    byte_array_y = sec_mult(byte_array_y,byte_array_w)
+    refresh_masks(w)
+    y = sec_mult(y,w)
 
-    for i in range (d+1):
-        byte_array_y[i] = gf_exp( byte_array_y[i], 16)
+    for i in range (d):
+        y[i] = sec_gf_sqr(sec_gf_sqr(sec_gf_sqr(sec_gf_sqr(y[i])))) # y ^ 16
 
-    byte_array_y = sec_mult(byte_array_y,byte_array_w)
-    byte_array_y = sec_mult(byte_array_y,byte_array_z)
+    y = sec_mult(y,w)
+    y = sec_mult(y,z)
 
-    return byte_array_y
+    return y
 
-
-
-x = [b'\x07', b'\x00']
-print(sec_exp_254 (x))
+# x = [0xc8, 0xc7]
+# y= sec_exp_254(x)
+# x_prime = x[0] ^ x[1]
+# y_prime = y[0] ^ y[1]
+# print(sec_gf_mul(x_prime, y_prime)) # should be equal to 1

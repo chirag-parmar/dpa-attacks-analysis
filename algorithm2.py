@@ -30,6 +30,6 @@ def inversion (x):
 
     return y
 
-x = bytes(random.randint(0, 255))
-#x = b'\x0b'
-print(inversion(x))
+# x = bytes(random.randint(0, 255))
+# #x = b'\x0b'
+# print(inversion(x))

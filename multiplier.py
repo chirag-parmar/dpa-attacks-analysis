@@ -1,6 +1,6 @@
 #Log table using 0xe5 (229) as the generator
 ltable = [
-0xff, 0xff, 0xc8, 0x08, 0x91, 0x10, 0xd0, 0x36, 
+0xff, 0x00, 0xc8, 0x08, 0x91, 0x10, 0xd0, 0x36, 
 0x5a, 0x3e, 0xd8, 0x43, 0x99, 0x77, 0xfe, 0x18, 
 0x23, 0x20, 0x07, 0x70, 0xa1, 0x6c, 0x0c, 0x7f, 
 0x62, 0x8b, 0x40, 0x46, 0xc7, 0x4b, 0xe0, 0x0e, 
@@ -82,15 +82,15 @@ def is_smaller(a, b):
 
     return c
 
-def gf_mul(byte_a,byte_b):
-
-    a = int.from_bytes(byte_a,"big")
-    b = int.from_bytes(byte_b,"big")
+# @description: TODO
+# @params: a - integer - input first byte
+#          b - integer - input second byte
+def gf_mul(a, b):
 
     # print("Input bytes to int:", a , ",", b)
 
     if a == 0 or b == 0:
-        return hex(0)
+        return 0
     
     temp_ltable_result = (ltable[a] + ltable[b])%255
 
@@ -100,12 +100,12 @@ def gf_mul(byte_a,byte_b):
 
     # print ("EXP Conversion:", temp_atable_result)
 
-    return hex(temp_atable_result)
+    return temp_atable_result
 
-def sec_gf_mul(byte_a,byte_b):
-
-    a = int.from_bytes(byte_a,"big")
-    b = int.from_bytes(byte_b,"big")
+# @description: TODO
+# @params: a - integer - input first byte
+#          b - integer - input second byte
+def sec_gf_mul(a, b):
 
     # print("Input bytes to int:", a , ",", b)
 
@@ -129,11 +129,12 @@ def sec_gf_mul(byte_a,byte_b):
     # print ("m_b:", m_b)
 
     result = r * (m_a & m_b)
-    return result.to_bytes(1,"big")
 
-def sec_gf_sqr(byte_a):
+    return result
 
-    a = int.from_bytes(byte_a,"big")
+# @description: TODO
+# @params: a - integer - input byte
+def sec_gf_sqr(a):
 
     # print("Input bytes to int:", a , ",", b)
 
@@ -154,8 +155,12 @@ def sec_gf_sqr(byte_a):
     # print ("m_a:", m_a)
 
     result = r * m_a 
-    return result.to_bytes(1,"big")
 
+    return result
+
+# @description: TODO
+# @params: a - integer - input first byte
+#          b - integer - input second byte
 def gf_exp(base, exp):
     base_int = int.from_bytes(base, "big")
     

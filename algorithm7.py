@@ -1,23 +1,26 @@
 # Algorithm 7 - dth-order secure AES computation
 
 import random
-import algorithm5
+from  algorithm5 import *
+import numpy as np
 
+d = 8
+p = 0x3f
+
+
+s = np.empty(d+1, dtype=int)
 s[0] = p #p stands for plaintext
 
 # state masking
 
-for i in range (d+1):
-    s[i] = random.randint(16 *8)
+for i in range (1, d+1):
+    s[i] = random.randint(0, 16*8)
     s[0] = s[0] ^ s[i]
 
-# all but last rounds
+y = sec_sbox_aes(s)
+result = 0
 
-for r in range (0, Nr):
-    for i in range (d+1):
-        s[i] = s[i] ^ k[i][r]
-    for l,j in range (1,5):
-        s = sec_sbox_aes (s)
-    for i in range (d+1):
-        #define mix columns and shift rows
+for r in y:
+    result ^= r
 
+print(hex(result))
