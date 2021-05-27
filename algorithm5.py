@@ -39,4 +39,4 @@ def convert_to_binary_array(a):
     for bit in binary_string:
         binary_array.append(int(bit))
 
-    return np.array(binary_array, dtype=bool)
+    return np.flip(np.array(binary_array, dtype=bool))
