@@ -37,6 +37,7 @@ def sec_exp_254 (x):
 
     return y
 
+# test for sec_exp_254
 # x = [0xc8, 0xc7]
 # y= sec_exp_254(x)
 # x_prime = x[0] ^ x[1]

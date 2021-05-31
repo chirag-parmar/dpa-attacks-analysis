@@ -1,32 +1,23 @@
 # Algorithm 2 - Inversion
 
-import multiplier
+from multiplier import *
 import random
 
 def inversion (x):
 
-    z = multiplier.sec_gf_mul(x, x)
+    z = sec_gf_sqr(x)
 
-    y = multiplier.sec_gf_mul(x,z)
+    y = sec_gf_mul(x,z)
 
-    #print(multiplier.sec_gf_mul(y,multiplier.sec_gf_mul(y, multiplier.sec_gf_mul(y,y))))
-    #print(multiplier.gf_exp(y,4))
+    w = sec_gf_sqr(sec_gf_sqr(y)) # y^4
 
-    #w = multiplier.gf_exp(y,4)
-    w = multiplier.sec_gf_sqr(y)
-    w = multiplier.sec_gf_sqr(w)
+    y = sec_gf_mul(y,w)
 
-    y = multiplier.sec_gf_mul(y,w)
+    y = sec_gf_sqr(sec_gf_sqr(sec_gf_sqr(sec_gf_sqr(y)))) # y^16
 
-    #y = multiplier.gf_exp(y,16)
-    y = multiplier.sec_gf_sqr(y)
-    y = multiplier.sec_gf_sqr(y)
-    y = multiplier.sec_gf_sqr(y)
-    y = multiplier.sec_gf_sqr(y)
+    y = sec_gf_mul(y,w)
 
-    y = multiplier.sec_gf_mul(y,w)
-
-    y = multiplier.sec_gf_mul(y,z)
+    y = sec_gf_mul(y,z)
 
     return y
 

@@ -27,7 +27,23 @@ def sec_mult(a, b):
  
     return c
 
-# a = [0x01,0x02]
-# b = [0x01,0x02]
+# test for checking the secure multiplier
 
-# print(sec_mult(a, b))
+# A = [0xab, 0x17, 0xc8]
+# B = [0xcd, 0x2f, 0x3c]
+
+# a = 0
+# b = 0
+
+# for share in A:
+#     a ^= share
+
+# for share in B:
+#     b ^= share
+
+# r = 0
+
+# for share in sec_mult(A, B):
+#     r ^= share
+
+# print(r == multiplier.sec_gf_mul(a, b)) # should print true

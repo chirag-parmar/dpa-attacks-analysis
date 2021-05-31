@@ -3,40 +3,37 @@
 from algorithm3 import *
 import numpy as np
 
-af_matrix = np.array([[1,0,0,0,1,1,1,1],
-             [1,1,0,0,0,1,1,1],
-             [1,1,1,0,0,0,1,1],
-             [1,1,1,1,0,0,0,1],
-             [1,1,1,1,1,0,0,0],
-             [0,1,1,1,1,1,0,0],
-             [0,0,1,1,1,1,1,0],
-             [0,0,0,1,1,1,1,1]], dtype=bool)
+af_vector = [0xF1, 0xE3, 0xC7, 0x8F, 0x1F, 0x3E, 0x7C, 0xF8]
 
-v = np.array([1,1,0,0,0,1,1,0], dtype=bool)
+def at(a):
+    result_string = ""
+    for byte in af_vector:
+        temp = add_bits_of_int(byte & a)
+        result_string += str(temp)
 
-def at (a):
-    # convert byte a to numpy array
-    matrix_a = convert_to_binary_array(a)
-    result = af_matrix.dot(matrix_a)
-    result_byte = np.packbits(np.uint8(np.flip(result)))[0]
-    return result_byte ^ 0x63
-    # return result_byte
+    result = int(result_string[::-1], 2) # parse the bits inverted
+
+    return  result ^ 0x63
 
 def sec_sbox_aes (x):
     d = len(x)
     y = sec_exp_254(x)
 
-    for i in range (d):
+    for i in range(d):
         y[i] = at(y[i])
         y[0] = y[0] ^ 0x63
 
     y[0] = y[0] ^ 0x63
+
     return y
 
-def convert_to_binary_array(a):
+def add_bits_of_int(a):
     binary_string = "{:08b}".format(a)
-    binary_array = []
+    result = 0
     for bit in binary_string:
-        binary_array.append(int(bit))
+        result ^= int(bit)
 
-    return np.flip(np.array(binary_array, dtype=bool))
+    return result
+
+# print(hex(at(0x00))) # should be 0x63
+# print(hex(at(0x01))) # should be 0x7c

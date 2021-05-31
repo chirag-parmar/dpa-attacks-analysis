@@ -7,7 +7,6 @@ import numpy as np
 d = 8
 p = 0x01
 
-
 s = np.empty(d+1, dtype=int)
 s[0] = p #p stands for plaintext
 
