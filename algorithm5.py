@@ -15,9 +15,9 @@ def at(a):
 
     return  result ^ 0x63
 
-def sec_sbox_aes (x):
+def sec_sbox_aes (x, recorder):
     d = len(x)
-    y = sec_exp_254(x)
+    y = sec_exp_254(x, recorder)
 
     for i in range(d):
         y[i] = at(y[i])
