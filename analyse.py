@@ -134,30 +134,27 @@ def analyse(file, order=0):
     if order > 0:
         for sd in traces.keys():
             traces[sd] = traces_compress(order+1, traces[sd])
+        for sd in intermediates.keys():
             intermediates[sd] = intermediates_compress(order+1, intermediates[sd])
 
     title = "Dataset: " + file + "\nDataset Order: " + str(reader.get_d()) + "\nAnalysis Order: " + str(order) 
 
-    # analyse traces for sd 0.2, 1.2 and 2.8
-    plot_corr(title + "\nSD: 0.2 \nType: Intermediate Traces", trace_hypothesis.T, traces[0.2].T)
-    plot_corr(title + "\nSD: 1.2 \nType: Intermediate Traces", trace_hypothesis.T, traces[1.2].T)
-    plot_corr(title + "\nSD: 2.8 \nType: Intermediate Traces", trace_hypothesis.T, traces[2.8].T)
+    # analyse traces for sd 0.40
+    plot_corr(title + "\nSD: 0.40 \nType: Intermediate Traces", trace_hypothesis.T, traces[0.40].T)
 
-    # analyse intermediates for sd 0.2, 1.2 and 2.8
-    plot_corr(title + "\nSD: 0.2 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[0.2].T)
-    plot_corr(title + "\nSD: 1.2 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[1.2].T)
-    plot_corr(title + "\nSD: 2.8 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[2.8].T)
+    # analyse intermediates for sd 10.00
+    plot_corr(title + "\nSD: 10.00 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[10.00].T)
 
     # analyse traces for sd 0.2 and 2.8 wrt ntraces
-    plot_numtraces(title + "\nSD: 0.2 \nType: Intermediate Traces", trace_hypothesis.T, traces[0.2].T)
-    plot_numtraces(title + "\nSD: 2.8 \nType: Intermediate Traces", trace_hypothesis.T, traces[2.8].T)
+    plot_numtraces(title + "\nSD: 0.2 \nType: Intermediate Traces", trace_hypothesis.T, traces[0.20].T)
+    plot_numtraces(title + "\nSD: 2.8 \nType: Intermediate Traces", trace_hypothesis.T, traces[2.80].T)
 
     # analyse intermediates for sd 0.2 wrt ntraces
-    plot_numtraces(title + "\nSD: 0.2 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[0.2].T)
-    plot_numtraces(title + "\nSD: 2.8 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[2.8].T)
+    plot_numtraces(title + "\nSD: 0.2 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[0.20].T)
+    plot_numtraces(title + "\nSD: 2.8 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[2.80].T)
     
     # plot noise versus correlation coeff graph
-    plot_noise(title + "\nType: Intermediate Values", trace_hypothesis, traces)
+    plot_noise(title + "\nType: Intermediate Traces", trace_hypothesis, traces)
 
     # plot noise versus correlation coeff graph
     plot_noise(title + "\nType: Intermediate Values", intermediate_hypothesis, intermediates)
@@ -176,16 +173,20 @@ def plot_noise(title, hypothesis, traces):
         vector = hypothesis[:,plot_num]
         sd_indexes = []
         corr_sd = []
-        for sd in traces.keys():
+
+        for sd in sorted(traces.keys()):
             sd_indexes.append(sd)
             coeff_matrix = np.corrcoef(vector.T, traces[sd].T)
             coeff_matrix = coeff_matrix[:1,1:]
             corr_sd.append(max(coeff_matrix[0]))
 
+        print(sd_indexes)
+
         sub_plot = fig.add_subplot(2, 4, plot_num+1)
         sub_plot.plot(sd_indexes, corr_sd)
         sub_plot.set_xlabel("sd of err")
         sub_plot.set_ylabel("corr. coeff.")
+        sub_plot.set_ylim(-1,1)
         sub_plot.set_title("Operation #{}".format(plot_num+1))
 
     fig.tight_layout()
@@ -224,8 +225,6 @@ def gen_hypothesis(inputs):
     return trace_hypothesis, intermediate_hypothesis
 
 
-analyse("no_masks")
-#analyse("with_masks_3")
-#analyse("with_masks_3", order=3)
-#analyse_numtraces()
-#analyse_numtraces(3)
+# analyse("no_masks")
+# analyse("with_masks_3")
+analyse("with_masks_3", order=3)

@@ -21,6 +21,8 @@ class Recorder:
 
         for sd in self.traces.keys():
             self.hdf5_file.create_dataset("traces_" + str(sd), data=self.traces[sd], dtype=np.float64)
+
+        for sd in self.intermediates.keys():
             self.hdf5_file.create_dataset("intermediates_" + str(sd), data=self.intermediates[sd], dtype=np.float64)
         
         self.hdf5_file.create_dataset("inputs", data=self.inputs, dtype=np.uint8)
@@ -33,8 +35,7 @@ class Recorder:
     def record_values(self, values):
         for value in values:       
             self.trace.append(get_hamming_weight(value))
-
-        self.intermediate.extend(values)
+            self.intermediate.append(float(value))
 
     def record_input(self, input):
         self.inputs.append(input)
@@ -43,18 +44,22 @@ class Recorder:
         trace = np.array(self.trace)
         intermediate = np.array(self.intermediate)
 
-        for l in range(0, 30, 2):
-            sd = round(l/10, 1)
-            noise = np.random.normal(4, sd, trace.shape)
-            intermediate_noise = np.random.normal(128, sd, intermediate.shape)
+        for l in range(0, 300, 2):
+            sd = round(l/100, 2)
+            noise = np.random.normal(0, sd, trace.shape)
 
             if sd not in self.traces.keys():
                 self.traces[sd] = []
+                     
+            self.traces[sd].append(trace + noise)
+
+        for l in range(0, 200, 2):
+            sd = round(l/10, 2)
+            intermediate_noise = np.random.normal(0, sd, intermediate.shape)
 
             if sd not in self.intermediates.keys():
                 self.intermediates[sd] = [] 
                      
-            self.traces[sd].append(trace + noise)
             self.intermediates[sd].append(intermediate + intermediate_noise)
 
         self.trace = []
@@ -66,7 +71,7 @@ class Recorder:
 
     def get_intermediate_hypothesis(self):
         # TODO: Print warning because this function can be only used properly with d=0
-        return np.array(self.traces[0.0])
+        return np.array(self.intermediates[0.0])
 
 
 
