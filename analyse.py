@@ -59,13 +59,7 @@ def plot_numtraces(title, hypothesis, traces):
         temp_hypothesis = hypothesis[:,:ntrace]
         temp_hypothesis = np.asarray(temp_hypothesis)
         
-        # calculate correlation
-        coeff_matrix = np.corrcoef(temp_hypothesis, temp_traces)
-        x, y = temp_hypothesis.shape
-
-        # remove unnecessary columns and rows from correlation matrix
-        # first few hypothesis rows and last few trace columns
-        coeff_matrix = coeff_matrix[:x, x:]
+        coeff_matrix = calculate_corr(temp_hypothesis, temp_traces)
 
         # take the maximum value per each intermediate step
         corr = np.max(coeff_matrix, axis = 1)
@@ -84,6 +78,8 @@ def plot_numtraces(title, hypothesis, traces):
         sub_plot = fig.add_subplot(2, 4, plot_num)
         sub_plot.plot(x_ntraces, hypothesis_corr)
         sub_plot.set_title("Operation #{}".format(plot_num))
+        sub_plot.set_ylabel("Corr. Coeff.")
+        sub_plot.set_xlabel("#traces")
         plot_num += 1
 
     fig.tight_layout()
@@ -225,6 +221,6 @@ def gen_hypothesis(inputs):
     return trace_hypothesis, intermediate_hypothesis
 
 
-# analyse("no_masks")
-# analyse("with_masks_3")
+analyse("no_masks")
+analyse("with_masks_3")
 analyse("with_masks_3", order=3)
