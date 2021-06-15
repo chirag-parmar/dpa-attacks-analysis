@@ -141,13 +141,11 @@ def analyse(file, order=0):
     # analyse intermediates for sd 10.00
     plot_corr(title + "\nSD: 10.00 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[10.00].T)
 
-    # analyse traces for sd 0.2 and 2.8 wrt ntraces
-    plot_numtraces(title + "\nSD: 0.2 \nType: Intermediate Traces", trace_hypothesis.T, traces[0.20].T)
-    plot_numtraces(title + "\nSD: 2.8 \nType: Intermediate Traces", trace_hypothesis.T, traces[2.80].T)
+    # analyse traces for sd 0.2 wrt ntraces
+    plot_numtraces(title + "\nSD: 0.40 \nType: Intermediate Traces", trace_hypothesis.T, traces[0.40].T)
 
-    # analyse intermediates for sd 0.2 wrt ntraces
-    plot_numtraces(title + "\nSD: 0.2 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[0.20].T)
-    plot_numtraces(title + "\nSD: 2.8 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[2.80].T)
+    # analyse intermediates for sd 10 wrt ntraces
+    plot_numtraces(title + "\nSD: 10.00 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[10.00].T)
     
     # plot noise versus correlation coeff graph
     plot_noise(title + "\nType: Intermediate Traces", trace_hypothesis, traces)
@@ -176,7 +174,7 @@ def plot_noise(title, hypothesis, traces):
             coeff_matrix = coeff_matrix[:1,1:]
             corr_sd.append(max(coeff_matrix[0]))
 
-        print(sd_indexes)
+        #print(sd_indexes)
 
         sub_plot = fig.add_subplot(2, 4, plot_num+1)
         sub_plot.plot(sd_indexes, corr_sd)
