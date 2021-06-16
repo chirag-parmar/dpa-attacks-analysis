@@ -144,8 +144,14 @@ def analyse(file, order=0):
     # analyse traces for sd 0.2 wrt ntraces
     plot_numtraces(title + "\nSD: 0.40 \nType: Intermediate Traces", trace_hypothesis.T, traces[0.40].T)
 
+    # analyse traces for sd 0.2 wrt ntraces
+    plot_numtraces(title + "\nSD: 0.00 \nType: Intermediate Traces", trace_hypothesis.T, traces[0.00].T)
+
     # analyse intermediates for sd 10 wrt ntraces
     plot_numtraces(title + "\nSD: 10.00 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[10.00].T)
+
+     # analyse intermediates for sd 10 wrt ntraces
+    plot_numtraces(title + "\nSD: 0.00 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[0.00].T)
     
     # plot noise versus correlation coeff graph
     plot_noise(title + "\nType: Intermediate Traces", trace_hypothesis, traces)
