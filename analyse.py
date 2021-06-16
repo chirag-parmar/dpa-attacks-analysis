@@ -41,6 +41,8 @@ def plot_corr(title, hypothesis, traces):
 
     print("Plot Saved  at {}".format(filename))
 
+
+
 def plot_numtraces(title, hypothesis, traces):
 
     corr_numtraces = []
@@ -195,7 +197,7 @@ def plot_noise(title, hypothesis, traces):
     plt.savefig(filename) 
     print("Plot Saved  at {}".format(filename))
 
-def analyse_numtraces(d = 0,order=0):
+def analyse_numtraces(d = 0, order = 0):
 
     title = "\nDataset Order: " + str(d) + "\nAnalysis Order: " + str(order) 
 
@@ -225,6 +227,68 @@ def gen_hypothesis(inputs):
     return trace_hypothesis, intermediate_hypothesis
 
 
-analyse("no_masks")
-analyse("with_masks_3")
-analyse("with_masks_3", order=3)
+
+def analyse_order(file):
+    reader = Reader(file)
+
+    trace_hypothesis, intermediate_hypothesis = gen_hypothesis(reader.get_inputs())
+    traces = reader.get_traces()
+    intermediates = reader.get_intermediates()
+    
+    title = "Dataset: " + file + "\nDataset Order: " + str(reader.get_d()) 
+
+    # analyse traces for sd 0.40
+    plot_order(title + "\nSD: 0.40 \nType: Intermediate Traces", trace_hypothesis.T, traces[0.40], False)
+
+    # analyse intermediates for sd 10.00
+    plot_order(title + "\nSD: 10.00 \nType: Intermediate Values", intermediate_hypothesis.T, intermediates[10.00], True)
+
+
+def plot_order(title, hypothesis, traces, intermediate_values_on):
+    corr_order = []
+    order_range = [0,1,3,4,9,19]
+
+    for order in order_range:
+        temp_traces_order = []
+        corr = []
+        if (intermediate_values_on):
+            temp_traces_order = intermediates_compress(order+1, traces)
+        else:
+            temp_traces_order = traces_compress(order+1, traces)
+
+        coeff_matrix = calculate_corr(hypothesis, temp_traces_order.T)
+
+        # take the maximum value per each intermediate step
+        corr = np.max(coeff_matrix, axis = 1)
+        corr_order.append(corr)
+    
+    # append correlation for each ntraces value
+    # corr_numtraces.shape = [number of intermediate steps, number of iterations of ntraces] 
+    corr_order = (np.asarray(corr_order)).T
+    
+    # plot the above matrix row wise i.e. per hypothesis
+    fig = plt.figure(figsize = (12, 8))
+    fig.suptitle(title)
+
+    plot_num = 1
+    for hypothesis_corr in corr_order:            
+        sub_plot = fig.add_subplot(2, 4, plot_num)
+        sub_plot.plot(order_range, hypothesis_corr)
+        sub_plot.set_title("Operation #{}".format(plot_num))
+        sub_plot.set_ylabel("Corr. Coeff.")
+        sub_plot.set_xlabel("order")
+        plot_num += 1
+
+    fig.tight_layout()
+
+    filename = "./plots/" + str(time.time()) + ".png"
+    plt.savefig(filename) 
+
+    print("Plot Saved  at {}".format(filename))
+        
+
+
+#analyse("no_masks")
+#analyse("with_masks_3")
+#analyse("with_masks_3", order=3)
+analyse_order("with_masks_19")
