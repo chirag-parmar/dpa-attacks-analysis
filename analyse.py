@@ -1,6 +1,6 @@
 from reader import Reader
 from recorder import Recorder
-#import record
+import record
 import numpy as np
 import matplotlib.pyplot as plt
 from  algorithm5 import *
@@ -40,7 +40,6 @@ def plot_corr(title, hypothesis, traces):
     plt.savefig(filename) 
 
     print("Plot Saved  at {}".format(filename))
-
 
 
 def plot_numtraces(title, hypothesis, traces):
@@ -226,8 +225,6 @@ def gen_hypothesis(inputs):
     intermediate_hypothesis = recorder.get_intermediate_hypothesis()
     return trace_hypothesis, intermediate_hypothesis
 
-
-
 def analyse_order(file):
     reader = Reader(file)
 
@@ -286,9 +283,74 @@ def plot_order(title, hypothesis, traces, intermediate_values_on):
 
     print("Plot Saved  at {}".format(filename))
         
+def plot_order_d(sd, intermediate_values_on): 
+    recorder = Recorder()
+    r = Reader("no_masks")
+    hypothesis, intermediate_hypothesis = gen_hypothesis(r.get_inputs())
+    corr_d = []
+    x_d = []
+
+    for d in range(0,20,1):
+        x_d.append(d)
+        temp_traces_d = []
+        corr = []
+        record.record(str(d), d)
+        reader = Reader(str(d))
+        traces = reader.get_traces()
+        intermediates = reader.get_intermediates()
+
+        
+        if(intermediate_values_on):
+            if(d > 0):
+                intermediates [sd] = intermediates_compress(d+1, intermediates[sd])
+            traces[sd] = intermediates[sd]
+            hypothesis = intermediate_hypothesis
+        else:
+            if(d > 0):
+                traces[sd] = traces_compress(d+1, traces[sd])
+
+        coeff_matrix = calculate_corr(hypothesis.T, traces[sd].T)
+        # take the maximum value per each intermediate step
+        corr = np.max(coeff_matrix, axis = 1)
+        corr_d.append(corr)
+    
+    # append correlation for each ntraces value
+    # corr_numtraces.shape = [number of intermediate steps, number of iterations of ntraces] 
+    corr_d = (np.asarray(corr_d)).T
+    
+    # plot the above matrix row wise i.e. per hypothesis
+    fig = plt.figure(figsize = (12, 8))
+    if(intermediate_values_on):
+        title = "\nSD:" + str(sd) + "\nType: Intermediate Values" 
+    else:
+        title = "\nSD:" + str(sd) + "\nType: Intermediate Traces" 
+    
+    fig.suptitle(title)
+
+    plot_num = 1
+    for hypothesis_corr in corr_d:            
+        sub_plot = fig.add_subplot(2, 4, plot_num)
+        sub_plot.plot(x_d, hypothesis_corr)
+        sub_plot.set_title("Operation #{}".format(plot_num))
+        sub_plot.set_ylabel("Corr. Coeff.")
+        sub_plot.set_xlabel("d")
+        plot_num += 1
+
+    fig.tight_layout()
+
+    filename = "./plots/" + str(time.time()) + ".png"
+    plt.savefig(filename) 
+
+    print("Plot Saved  at {}".format(filename))
+
+
 
 
 #analyse("no_masks")
 #analyse("with_masks_3")
 #analyse("with_masks_3", order=3)
-analyse_order("with_masks_19")
+#analyse_order("with_masks_19")
+#plot_order_d(0.40, False)
+#plot_order_d(10.00, True)
+plot_order_d(0.00, False)
+plot_order_d(0.00, True)
