@@ -27,9 +27,14 @@ for j in range(9):
                 
                 xor_weight_dict[key].append(get_hamming_weight(byte_j ^ byte_k))
 
-xor_weights = {}
+xor_weights_avg = {}
+xor_weights_prob = {}
 
 for key in xor_weight_dict.keys():
-    xor_weights[key] = np.mean(xor_weight_dict[key])
+    xor_weights_avg[key] = np.mean(xor_weight_dict[key])
 
-print(xor_weights)
+for key in xor_weight_dict.keys():
+    xor_weights_prob[key] = np.bincount(xor_weight_dict[key]).argmax()
+
+print(xor_weights_avg)
+print(xor_weights_prob)
