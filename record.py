@@ -34,7 +34,8 @@ def record(file, order=0, n_traces=256, zero_masks=False):
     recorder.save_dataset(file)
 
 #record("no_masks")
-#record("with_masks_3", 3, n_traces=5000)
+record("with_masks_1", 1, n_traces=5000)
+# record("with_masks_3", 3, n_traces=5000)
 #record("with_masks_19", 19, n_traces = 5000)
 #record("no_masks_1000traces", n_traces=1000)
 

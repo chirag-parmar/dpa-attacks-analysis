@@ -117,7 +117,31 @@ def traces_compress(bin_size, traces):
     compressed_traces = []
 
     for trace in traces:   
-        compressed_traces.append(np.sum(trace.reshape(-1, bin_size), axis=1))
+        compressed_traces.append(np.mean(trace.reshape(-1, bin_size), axis=1))
+
+    return np.array(compressed_traces)
+
+def order_1_trace_compress(traces):
+
+    xor_weights = {
+        '00': 0.0, '01': 1.0, '02': 2.0, '03': 3.0, '04': 4.0, '05': 5.0, '06': 6.0, 
+        '07': 7.0, '08': 8.0, '11': 1.75, '12': 2.5, '13': 3.25, '14': 4.0, '15': 4.75, 
+        '16': 5.5, '17': 6.25, '18': 7.0, '22': 3.0, '23': 3.5, '24': 4.0, '25': 4.5, 
+        '26': 5.0, '27': 5.5, '28': 6.0, '33': 3.75, '34': 4.0, '35': 4.25, '36': 4.5, 
+        '37': 4.75, '38': 5.0, '44': 4.0, '45': 4.0, '46': 4.0, '47': 4.0, '48': 4.0, 
+        '55': 3.75, '56': 3.5, '57': 3.25, '58': 3.0, '66': 3.0, '67': 2.5, '68': 2.0, 
+        '77': 1.75, '78': 1.0, '88': 0.0
+    }
+
+    compressed_traces = []
+
+    for trace in traces:
+        compressed_trace = []
+        for v in range(0, len(trace), 2):
+            key = str(min(trace[v], trace[v+1])) + str(max(trace[v], trace[v+1]))
+            compressed_value = xor_weights[key]
+            compressed_trace.append(compressed_value)
+        compressed_traces.append(compressed_trace)
 
     return np.array(compressed_traces)
 
@@ -343,14 +367,29 @@ def plot_order_d(sd, intermediate_values_on):
 
     print("Plot Saved  at {}".format(filename))
 
+def analyse_different_methods_order_1(file):
+    reader = Reader(file)
 
+    trace_hypothesis, intermediate_hypothesis = gen_hypothesis(reader.get_inputs())
+    traces = reader.get_traces()
+    intermediates = reader.get_intermediates()
+
+    title = "Dataset: " + file + "\nDataset Order: " + str(reader.get_d()) + "\nAnalysis Order: " + str(1)
+
+    # analyse traces for sd 0.00
+    traces_avereaged_xored_method = order_1_trace_compress(traces[0.00])
+    plot_corr(title + "\nMethod: Average XORed weights" + "\nSD: 0.00 \nType: Intermediate Traces", trace_hypothesis.T, traces_avereaged_xored_method.T)
+
+    # analyse intermediates for sd 10.00
+    traces_mean_method = traces_compress(2, traces[0.00])
+    plot_corr(title + "\nMethod: Mean weights" + "\nSD: 0.00 \nType: Intermediate Values", trace_hypothesis.T, traces_mean_method.T)
 
 
 #analyse("no_masks")
 #analyse("with_masks_3")
-#analyse("with_masks_3", order=3)
+analyse_different_methods_order_1("with_masks_1")
 #analyse_order("with_masks_19")
 #plot_order_d(0.40, False)
 #plot_order_d(10.00, True)
-plot_order_d(0.00, False)
-plot_order_d(0.00, True)
+# plot_order_d(0.00, False)
+# plot_order_d(0.00, True)
