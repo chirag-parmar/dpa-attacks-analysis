@@ -2,3 +2,4 @@ __pycache__
 **/*.pyc
 **/*.h5
 plots/*.png
+**/.DS_Store
