@@ -412,7 +412,7 @@ def analyse_different_methods_order_1(file):
 
     # analyse traces for sd 0.00
     traces_mean_method = traces_compress(2, traces[0.00])
-    plot_corr(title + "\nMethod: Mean weights" + "\nSD: 0.00 \nType: Intermediate Values", trace_hypothesis.T, traces_mean_method.T)
+    plot_corr(title + "\nMethod: Mean weights" + "\nSD: 0.00 \nType: Intermediate Tarces", trace_hypothesis.T, traces_mean_method.T)
 
 
 #analyse("no_masks")
