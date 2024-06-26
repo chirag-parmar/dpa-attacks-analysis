@@ -176,3 +176,6 @@ def gf_exp(base, exp):
 
     return temp_atable_result.to_bytes(1, "big")
 
+print(sec_gf_mul(0xdb, 0x03))
+print(sec_gf_mul(0xdb, 0x02) ^ sec_gf_mul(0x13, 0x03) ^ sec_gf_mul(0x53, 0x01) ^ sec_gf_mul(0x45, 0x01))
+print(173 ^ 118)
